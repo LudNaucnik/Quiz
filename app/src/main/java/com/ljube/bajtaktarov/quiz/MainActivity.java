@@ -6,11 +6,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static final int FCReqCode = 8907,CapCityReqCode = 8908;
-    Button FCButton,CapitalCityButton;
+    public static final int FCReqCode = 8907, CapCityReqCode = 8908;
+    Button FCButton, CapitalCityButton;
     TextView PointsTextView;
     int Points = 0;
 
@@ -39,16 +40,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == FCReqCode) {
-            if (resultCode == RESULT_OK) {
-                Points += data.getIntExtra("Points", 0);
-                PointsTextView.setText("Points " + String.valueOf(Points));
-            }
+            Toast.makeText(this, data.getStringExtra("Test"), Toast.LENGTH_LONG).show();
+//                Points += data.getIntExtra("Points", 0);
+            PointsTextView.setText("Points " + String.valueOf(Points));
+
         }
         if (requestCode == CapCityReqCode) {
-            if (resultCode == RESULT_OK) {
-                Points += data.getIntExtra("Points", 0);
-                PointsTextView.setText("Points " + String.valueOf(Points));
-            }
+            Points += data.getIntExtra("Points", 0);
+            PointsTextView.setText("Points " + String.valueOf(Points));
+            
         }
     }
 }

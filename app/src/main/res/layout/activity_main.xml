@@ -39,7 +39,7 @@
         android:id="@+id/relativeLayout">
 
         <Button
-            android:id="@+id/fcButton"
+            android:id="@+id/capitalCityButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
@@ -52,11 +52,11 @@
             android:textAllCaps="false" />
 
         <Button
-            android:id="@+id/capitalCityButton"
+            android:id="@+id/fcButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/fcButton"
-            android:layout_alignBottom="@+id/fcButton"
+            android:layout_alignBaseline="@+id/capitalCityButton"
+            android:layout_alignBottom="@+id/capitalCityButton"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_marginLeft="62dp"

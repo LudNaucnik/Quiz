@@ -16,6 +16,10 @@ public class CreateQuizActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_quiz);
         CalledFrom = getIntent();
-        Toast.makeText(this,CalledFrom.getStringExtra("DataType"), Toast.LENGTH_LONG).show();
+        Toast.makeText(this, CalledFrom.getStringExtra("DataType"), Toast.LENGTH_LONG).show();
+        Intent finishIntent = new Intent();
+        finishIntent.putExtra("Test", "Works");
+        setResult(MainActivity.FCReqCode,finishIntent);
+        finish();
     }
 }
