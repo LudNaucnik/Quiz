@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
         PointsTextView.setText("Points " + String.valueOf(Points));
         FCButton.setOnClickListener(FCButtonOnClick);
         NewGameButton.setOnClickListener(newGameMain);
+        CapitalCityButton.setOnClickListener(capitalCityOnClick);
     }
 
     View.OnClickListener newGameMain = new View.OnClickListener() {
@@ -42,9 +43,22 @@ public class MainActivity extends AppCompatActivity {
         public void onClick(View v) {
             Intent intent = new Intent(MainActivity.this, CreateQuizActivity.class);
             intent.putExtra("DataType", "fcdata");
+            intent.putExtra("QuestionStructure","Which FC is from ");
             intent.putExtra("Title", "Football Clubs");
             intent.putExtra("ReqCode", FCReqCode);
             startActivityForResult(intent, FCReqCode);
+        }
+    };
+
+    View.OnClickListener capitalCityOnClick = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Intent intent = new Intent(MainActivity.this, CreateQuizActivity.class);
+            intent.putExtra("DataType", "capitalcitydata");
+            intent.putExtra("QuestionStructure","Which country has capital city ");
+            intent.putExtra("Title", "Capital Cities");
+            intent.putExtra("ReqCode", CapCityReqCode);
+            startActivityForResult(intent, CapCityReqCode);
         }
     };
 

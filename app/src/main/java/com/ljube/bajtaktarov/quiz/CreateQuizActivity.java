@@ -30,7 +30,7 @@ import java.util.Scanner;
 public class CreateQuizActivity extends AppCompatActivity {
 
     Intent CalledFrom;
-    String QuestionType;
+    String QuestionType, QuestionStructure;
     ListView list;
     MediaPlayer mp = new MediaPlayer();
     int CorrectAnswer, Points = 0, numOfQuestions = 0, numQuestion = 1;
@@ -64,6 +64,7 @@ public class CreateQuizActivity extends AppCompatActivity {
         playSound(2);
         centerTitle();
         setTitle(CalledFrom.getStringExtra("Title"));
+        QuestionStructure = CalledFrom.getStringExtra("QuestionStructure");
         actionBarToolbar = (Toolbar) findViewById(R.id.action_bar);
         actionBarToolbar.setTitleTextColor(Color.parseColor("#33CC33"));
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -200,7 +201,7 @@ public class CreateQuizActivity extends AppCompatActivity {
             Answers[i] = QuestionList.get(i).Answer;
             AnswersImgID[i] = QuestionList.get(i).imgid;
         }
-        QuestionTextView.setText(String.valueOf(numQuestion) + ": " + "Which FC is from " + RandomQuestions.get(RandomNum).Question + " ?");
+        QuestionTextView.setText(String.valueOf(numQuestion) + ": " + QuestionStructure + RandomQuestions.get(RandomNum).Question + " ?");
         CorrectAnswer = RandomNum;
         if (passedQuestions.size() != numOfQuestions) {
             if (passedQuestions.contains(RandomQuestions.get(RandomNum)) == true) {
