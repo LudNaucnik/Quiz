@@ -29,10 +29,10 @@ public class MainActivity extends AppCompatActivity {
     View.OnClickListener FCButtonOnClick = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-//            Intent fc = new Intent(MainActivity.this, MenuActivity.class);
-//            fc.putExtra("DataType", "FCData");
-//            fc.putExtra("Points", Points);
-//            startActivityForResult(fc, FCDataReqCode);
+            Intent intent = new Intent(MainActivity.this, CreateQuizActivity.class);
+            intent.putExtra("DataType", "FCData");
+            intent.putExtra("Points", Points);
+            startActivityForResult(intent, FCReqCode);
         }
     };
 
