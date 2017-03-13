@@ -11,7 +11,7 @@ import android.widget.Toast;
 public class MainActivity extends AppCompatActivity {
 
     public static final int CancelReqCode = 8906, FCReqCode = 8907, CapCityReqCode = 8908;
-    Button FCButton, CapitalCityButton;
+    Button FCButton, CapitalCityButton, NewGameButton;
     TextView PointsTextView;
     int Points = 0;
 
@@ -22,18 +22,28 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         FCButton = (Button) findViewById(R.id.fcButton);
         CapitalCityButton = (Button) findViewById(R.id.capitalCityButton);
-        PointsTextView = (TextView) findViewById(R.id.pointsText);
+        NewGameButton = (Button) findViewById(R.id.newGameMainButton);
+        PointsTextView = (TextView) findViewById(R.id.pointsMainText);
         PointsTextView.setText("Points " + String.valueOf(Points));
         FCButton.setOnClickListener(FCButtonOnClick);
+        NewGameButton.setOnClickListener(newGameMain);
     }
+
+    View.OnClickListener newGameMain = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Points = 0;
+            PointsTextView.setText("Points " + String.valueOf(Points));
+        }
+    };
 
     View.OnClickListener FCButtonOnClick = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             Intent intent = new Intent(MainActivity.this, CreateQuizActivity.class);
             intent.putExtra("DataType", "fcdata");
-            intent.putExtra("ReqCode",FCReqCode);
-            intent.putExtra("Points", Points);
+            intent.putExtra("Title", "Football Clubs");
+            intent.putExtra("ReqCode", FCReqCode);
             startActivityForResult(intent, FCReqCode);
         }
     };
@@ -49,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
             PointsTextView.setText("Points " + String.valueOf(Points));
         }
         if (requestCode == CancelReqCode) {
-
+            PointsTextView.setText("Points " + String.valueOf(Points));
         }
     }
 }

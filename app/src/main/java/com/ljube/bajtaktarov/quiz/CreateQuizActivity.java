@@ -63,7 +63,7 @@ public class CreateQuizActivity extends AppCompatActivity {
         readCVS();
         playSound(2);
         centerTitle();
-//        setTitle("Test");
+        setTitle(CalledFrom.getStringExtra("Title"));
         actionBarToolbar = (Toolbar) findViewById(R.id.action_bar);
         actionBarToolbar.setTitleTextColor(Color.parseColor("#33CC33"));
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -144,9 +144,7 @@ public class CreateQuizActivity extends AppCompatActivity {
 
     private void centerTitle() {
         ArrayList<View> textViews = new ArrayList<>();
-
         getWindow().getDecorView().findViewsWithText(textViews, getTitle(), View.FIND_VIEWS_WITH_TEXT);
-
         if (textViews.size() > 0) {
             AppCompatTextView appCompatTextView = null;
             if (textViews.size() == 1) {
@@ -291,5 +289,4 @@ public class CreateQuizActivity extends AppCompatActivity {
         }
         return super.onKeyDown(keyCode, event);
     }
-
 }
