@@ -1,0 +1,20 @@
+Arsenal,England,arsenallogo
+Milan,Italy,milanlogo
+Barcelona,Spain,barcelonalogo
+Bayern,Germany,bayernlogo
+PSG,France,psglogo
+Porto,Portugal,portologo
+NK Zagreb,Croatia,zagreblogo
+FK Partizan,Serbia,partizanlogo
+FK Vardar,Macedonia,vardarlogo
+FC Zenit,Russia,zenitlogo
+Beijing Sinobo,China,sinobologo
+ACS Poli,Romania,polilogo,
+PFC Levski,Bulgaria,levskilogo
+Fenerbahçe,Turkey,fenerlogo
+Busan IPark,Korea,busanlogo
+Bylis Ballsh,Albania,bylislogo
+Békéscsaba,Hungary,bekescsabalogo
+Arka Gdynia,Poland,arkalogo
+Aktobe,Kazakhstan,aktobelogo
+Allsvenskan,Sweden,allsvenskanlogo

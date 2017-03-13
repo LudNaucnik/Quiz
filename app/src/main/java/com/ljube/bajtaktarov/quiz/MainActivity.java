@@ -10,7 +10,7 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static final int FCReqCode = 8907, CapCityReqCode = 8908;
+    public static final int CancelReqCode = 8906, FCReqCode = 8907, CapCityReqCode = 8908;
     Button FCButton, CapitalCityButton;
     TextView PointsTextView;
     int Points = 0;
@@ -31,7 +31,8 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             Intent intent = new Intent(MainActivity.this, CreateQuizActivity.class);
-            intent.putExtra("DataType", "FCData");
+            intent.putExtra("DataType", "fcdata");
+            intent.putExtra("ReqCode",FCReqCode);
             intent.putExtra("Points", Points);
             startActivityForResult(intent, FCReqCode);
         }
@@ -40,15 +41,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == FCReqCode) {
-            Toast.makeText(this, data.getStringExtra("Test"), Toast.LENGTH_LONG).show();
-//                Points += data.getIntExtra("Points", 0);
+            Points += data.getIntExtra("Points", 0);
             PointsTextView.setText("Points " + String.valueOf(Points));
-
         }
         if (requestCode == CapCityReqCode) {
             Points += data.getIntExtra("Points", 0);
             PointsTextView.setText("Points " + String.valueOf(Points));
-            
+        }
+        if (requestCode == CancelReqCode) {
+
         }
     }
 }
