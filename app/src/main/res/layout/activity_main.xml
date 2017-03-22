@@ -77,6 +77,16 @@
 
     </RelativeLayout>
 
+    <Button
+        android:id="@+id/AddButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/pointsMainText"
+        android:layout_alignBottom="@+id/pointsMainText"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="14dp"
+        android:text="Add Data"
+        android:textAllCaps="false"/>
 
 
 </RelativeLayout>
