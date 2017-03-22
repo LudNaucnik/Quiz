@@ -8,6 +8,10 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.OnEditorAction;
+
 public class MainActivity extends AppCompatActivity {
 
     public static final int CancelReqCode = 8906, FCReqCode = 8907, CapCityReqCode = 8908;
@@ -28,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
         FCButton.setOnClickListener(FCButtonOnClick);
         NewGameButton.setOnClickListener(newGameMain);
         CapitalCityButton.setOnClickListener(capitalCityOnClick);
+        ButterKnife.bind(this);
     }
 
     View.OnClickListener newGameMain = new View.OnClickListener() {
@@ -37,6 +42,11 @@ public class MainActivity extends AppCompatActivity {
             PointsTextView.setText("Points " + String.valueOf(Points));
         }
     };
+
+    @OnClick(R.id.AddButton)
+    public void AddData() {
+        Toast.makeText(this, "Works", Toast.LENGTH_SHORT).show();
+    }
 
     View.OnClickListener FCButtonOnClick = new View.OnClickListener() {
         @Override
