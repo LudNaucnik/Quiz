@@ -19,5 +19,7 @@
             android:configChanges="keyboardHidden|orientation|screenSize">
         </activity>
     </application>
+    <uses-permission
+        android:name="android.permission.INTERNET" />
 
 </manifest>

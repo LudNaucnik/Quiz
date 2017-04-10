@@ -40,7 +40,7 @@ public class CreateQuizActivity extends AppCompatActivity {
     Toolbar actionBarToolbar;
     RelativeLayout MainLayout;
     String[] Answers = new String[4];
-    Integer[] AnswersImgID = new Integer[4];
+    String[] AnswersImgID = new String[4];
     Button newgameButton;
     List<QuestionData> passedQuestions = new ArrayList<>();
     long timerMiliSeconds = 11000;
@@ -220,23 +220,43 @@ public class CreateQuizActivity extends AppCompatActivity {
     void readCVS() {
         String Text = "";
         try {
-            int resourceID = this.getResources().getIdentifier(QuestionType, "raw", this.getPackageName());
-            Scanner scan = new Scanner(getResources().openRawResource(resourceID));
-            while (scan.hasNextLine()) {
-                String line = scan.nextLine();
-                Text += line + "\n";
-            }
-            scan.close();
-            Log.d("Inner", Text);
-            CSVReader reader = new CSVReader(new StringReader(Text));
-            String[] nextLine;
-            while ((nextLine = reader.readNext()) != null) {
-                QuestionData newQuestion = new QuestionData();
-                newQuestion.Answer = nextLine[0];
-                newQuestion.Question = nextLine[1];
-                newQuestion.imgid = getResources().getIdentifier(nextLine[2], "drawable", getPackageName());
-                QuestionList.add(newQuestion);
-            }
+//            int resourceID = this.getResources().getIdentifier(QuestionType, "raw", this.getPackageName());
+//            Scanner scan = new Scanner(getResources().openRawResource(resourceID));
+//            while (scan.hasNextLine()) {
+//                String line = scan.nextLine();
+//                Text += line + "\n";
+//            }
+//            scan.close();
+//            Log.d("Inner", Text);
+//            CSVReader reader = new CSVReader(new StringReader(Text));
+//            String[] nextLine;
+//            while ((nextLine = reader.readNext()) != null) {
+//                QuestionData newQuestion = new QuestionData();
+//                newQuestion.Answer = nextLine[0];
+//                newQuestion.Question = nextLine[1];
+//                newQuestion.imgid = getResources().getIdentifier(nextLine[2], "drawable", getPackageName());
+//                QuestionList.add(newQuestion);
+//            }
+            QuestionData q1 = new QuestionData();
+            q1.Answer = "Answer1";
+            q1.Question = "Question1";
+            q1.imgid = "https://upload.wikimedia.org/wikipedia/en/thumb/4/47/FC_Barcelona_%28crest%29.svg/142px-FC_Barcelona_%28crest%29.svg.png";
+            QuestionList.add(q1);
+            QuestionData q2 = new QuestionData();
+            q2.Answer = "Answer2";
+            q2.Question = "Question2";
+            q2.imgid = "https://upload.wikimedia.org/wikipedia/en/thumb/4/47/FC_Barcelona_%28crest%29.svg/142px-FC_Barcelona_%28crest%29.svg.png";
+            QuestionList.add(q2);
+            QuestionData q3 = new QuestionData();
+            q3.Answer = "Answer3";
+            q3.Question = "Question3";
+            q3.imgid = "https://upload.wikimedia.org/wikipedia/en/thumb/4/47/FC_Barcelona_%28crest%29.svg/142px-FC_Barcelona_%28crest%29.svg.png";
+            QuestionList.add(q3);
+            QuestionData q4 = new QuestionData();
+            q4.Answer = "Answer4";
+            q4.Question = "Question4";
+            q4.imgid = "https://upload.wikimedia.org/wikipedia/en/thumb/4/47/FC_Barcelona_%28crest%29.svg/142px-FC_Barcelona_%28crest%29.svg.png";
+            QuestionList.add(q4);
             numOfQuestions = QuestionList.size();
         } catch (Exception ex) {
             Intent intent = new Intent();
