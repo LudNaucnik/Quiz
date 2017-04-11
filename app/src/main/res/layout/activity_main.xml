@@ -85,7 +85,7 @@
         android:layout_alignBottom="@+id/pointsMainText"
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="14dp"
-        android:text="Add Data"
+        android:text="Submit Data"
         android:textAllCaps="false"/>
 
 

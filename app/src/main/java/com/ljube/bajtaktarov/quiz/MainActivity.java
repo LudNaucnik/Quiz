@@ -14,8 +14,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
@@ -37,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
     public static final int CancelReqCode = 8906, FCReqCode = 8907, CapCityReqCode = 8908, PickPhotoReqCode = 8909;
     Button FCButton, CapitalCityButton, NewGameButton;
-    TextView PointsTextView, imgidText, QuestionText, AnswerText;
+    TextView PointsTextView, imgidText, QuestionText, AnswerText, ImageURL;
     int Points = 0;
 
     @Override
@@ -94,18 +96,19 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = this.getLayoutInflater();
         View myView = inflater.inflate(R.layout.add_data_alert, null);
-        QuestionText  = (TextView) myView.findViewById(R.id.question);
+        QuestionText = (TextView) myView.findViewById(R.id.question);
         AnswerText = (TextView) myView.findViewById(R.id.answer);
-        imgidText = (TextView) myView.findViewById(R.id.imgid);
-        Button choosePictire = (Button) myView.findViewById(R.id.choosePictureButton);
-        choosePictire.setOnClickListener(new View.OnClickListener() {
-
-            public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.setType("image/*");
-                startActivityForResult(intent, PickPhotoReqCode);
-            }
-        });
+//        imgidText = (TextView) myView.findViewById(R.id.imgid);
+        ImageURL = (TextView) myView.findViewById(R.id.imgurlText);
+//        Button choosePictire = (Button) myView.findViewById(R.id.choosePictureButton);
+//        choosePictire.setOnClickListener(new View.OnClickListener() {
+//
+//            public void onClick(View v) {
+//                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+//                intent.setType("image/*");
+//                startActivityForResult(intent, PickPhotoReqCode);
+//            }
+//        });
         builder.setView(myView)
                 .setPositiveButton("Submit", new DialogInterface.OnClickListener() {
                     @Override
@@ -115,10 +118,14 @@ public class MainActivity extends AppCompatActivity {
                         SubmitQuestionData question = new SubmitQuestionData();
                         question.Answer = AnswerText.getText().toString();
                         question.Question = QuestionText.getText().toString();
-                        question.imgid = imgidText.getText().toString();
+                        question.imgid = ImageURL.getText().toString();
                         question.QuestionCategory = Category;
-                        Toast.makeText(MainActivity.this,question.Answer+question.Question+question.imgid,Toast.LENGTH_LONG).show();
-                        myRef.push().setValue(question);
+                        if (question.Answer.length() == 0 || question.Question.length() == 0 || question.imgid.length() == 0) {
+                            Toast.makeText(MainActivity.this, "Fill all the field before submitting questions.", Toast.LENGTH_LONG).show();
+                        } else {
+                            myRef.push().setValue(question);
+                            Toast.makeText(MainActivity.this, "Question is submitted", Toast.LENGTH_LONG).show();
+                        }
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -168,25 +175,25 @@ public class MainActivity extends AppCompatActivity {
             PointsTextView.setText("Points " + String.valueOf(Points));
         }
         if (requestCode == PickPhotoReqCode) {
-            Uri selectedImageUri = data.getData();
-            imgidText.setText(selectedImageUri.getPath());
-            Uri file = Uri.fromFile(new File(selectedImageUri.getPath()));
-            StorageReference riversRef = storageRef.child("images/"+file.getLastPathSegment());
-            uploadTask = riversRef.putFile(file);
-
-// Register observers to listen for when the download is done or if it fails
-            uploadTask.addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    // Handle unsuccessful uploads
-                }
-            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
-                    Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                }
-            });
+//            Uri selectedImageUri = data.getData();
+//            imgidText.setText(selectedImageUri.getPath());
+//            Uri file = Uri.fromFile(new File(selectedImageUri.getPath()));
+//            StorageReference riversRef = storageRef.child("images/"+file.getLastPathSegment());
+//            uploadTask = riversRef.putFile(file);
+//
+//// Register observers to listen for when the download is done or if it fails
+//            uploadTask.addOnFailureListener(new OnFailureListener() {
+//                @Override
+//                public void onFailure(@NonNull Exception exception) {
+//                    // Handle unsuccessful uploads
+//                }
+//            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+//                @Override
+//                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+//                    // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+//                    Uri downloadUrl = taskSnapshot.getDownloadUrl();
+//                }
+//            });
         }
     }
 
