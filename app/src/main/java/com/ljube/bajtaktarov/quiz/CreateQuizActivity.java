@@ -275,51 +275,37 @@ public class CreateQuizActivity extends AppCompatActivity {
         try {
             FirebaseDatabase database = FirebaseDatabase.getInstance();
             DatabaseReference myRef = database.getReference(QuestionType);
-            myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            myRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
+                    QuestionData newQuestion = new QuestionData();
+                    for (DataSnapshot child: dataSnapshot.getChildren()) {
+                        newQuestion = child.getValue(QuestionData.class);
+                        QuestionList.add(newQuestion);
+                    }
+                    Log.d("123","Num of Questions: "+ String.valueOf(QuestionList.size()));
                     numOfQuestions = QuestionList.size();
                     CreateQuestion();
-                    StartTimers();
-                    progressBar.setVisibility(View.INVISIBLE);
-                    newgameButton.setVisibility(View.VISIBLE);
-                    list.setVisibility(View.VISIBLE);
-                    QuestionTextView.setVisibility(View.VISIBLE);
-                    playSound(2);
+                    CountDownTimer TimerStart = new CountDownTimer(1000, 1000) {
+                        @Override
+                        public void onTick(long millisUntilFinished) {
+
+                        }
+
+                        @Override
+                        public void onFinish() {
+                            StartTimers();
+                            progressBar.setVisibility(View.INVISIBLE);
+                            newgameButton.setVisibility(View.VISIBLE);
+                            list.setVisibility(View.VISIBLE);
+                            QuestionTextView.setVisibility(View.VISIBLE);
+                            playSound(2);
+                        }
+                    }.start();
                 }
 
                 @Override
                 public void onCancelled(DatabaseError error) {
-                    Intent intent = new Intent();
-                    setResult(MainActivity.CancelReqCode, intent);
-                    finish();
-                }
-            });
-            myRef.addChildEventListener(new ChildEventListener() {
-                @Override
-                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                    QuestionData newQuestion = new QuestionData();
-                    newQuestion = dataSnapshot.getValue(QuestionData.class);
-                    QuestionList.add(newQuestion);
-                }
-
-                @Override
-                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-                }
-
-                @Override
-                public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-                }
-
-                @Override
-                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
                     Intent intent = new Intent();
                     setResult(MainActivity.CancelReqCode, intent);
                     finish();
