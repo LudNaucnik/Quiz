@@ -246,7 +246,6 @@ public class CreateQuizActivity extends AppCompatActivity {
             }
             FirebaseDatabase database = FirebaseDatabase.getInstance();
             DatabaseReference myRef = database.getReference(QuestionType);
-            int i = 0;
             for (QuestionData q : QuestionList) {
                 myRef.push().setValue(q);
             }

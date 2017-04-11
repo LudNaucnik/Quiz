@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,6 +20,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.File;
 import java.io.InputStream;
@@ -35,7 +39,6 @@ public class MainActivity extends AppCompatActivity {
     Button FCButton, CapitalCityButton, NewGameButton;
     TextView PointsTextView, imgidText, QuestionText, AnswerText;
     int Points = 0;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,10 +78,10 @@ public class MainActivity extends AppCompatActivity {
                 .setItems(R.array.categories, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         if (which == 0) {
-                            CreateAddDataAlert();
+                            CreateAddDataAlert("Football Club");
                         }
                         if (which == 1) {
-                            CreateAddDataAlert();
+                            CreateAddDataAlert("Capital City");
                         }
                     }
                 });
@@ -86,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
         builder.show();
     }
 
-    void CreateAddDataAlert() {
+    void CreateAddDataAlert(final String Category) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = this.getLayoutInflater();
@@ -104,13 +107,18 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         builder.setView(myView)
-                .setPositiveButton("Add", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Submit", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        String answerString = AnswerText.getText().toString();
-                        String questionString = QuestionText.getText().toString();
-                        String imgidString = imgidText.getText().toString();
-                        Toast.makeText(MainActivity.this,answerString+questionString+imgidString,Toast.LENGTH_LONG).show();
+                        FirebaseDatabase database = FirebaseDatabase.getInstance();
+                        DatabaseReference myRef = database.getReference("SubmitQuestion");
+                        SubmitQuestionData question = new SubmitQuestionData();
+                        question.Answer = AnswerText.getText().toString();
+                        question.Question = QuestionText.getText().toString();
+                        question.imgid = imgidText.getText().toString();
+                        question.QuestionCategory = Category;
+                        Toast.makeText(MainActivity.this,question.Answer+question.Question+question.imgid,Toast.LENGTH_LONG).show();
+                        myRef.push().setValue(question);
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -162,6 +170,23 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == PickPhotoReqCode) {
             Uri selectedImageUri = data.getData();
             imgidText.setText(selectedImageUri.getPath());
+            Uri file = Uri.fromFile(new File(selectedImageUri.getPath()));
+            StorageReference riversRef = storageRef.child("images/"+file.getLastPathSegment());
+            uploadTask = riversRef.putFile(file);
+
+// Register observers to listen for when the download is done or if it fails
+            uploadTask.addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    // Handle unsuccessful uploads
+                }
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                    Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                }
+            });
         }
     }
 
