@@ -1,5 +1,6 @@
 package com.ljube.bajtaktarov.quiz;
 
+import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.graphics.Color;
 import android.media.MediaPlayer;
@@ -12,12 +13,20 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.opencsv.CSVReader;
 
 import java.io.StringReader;
@@ -26,6 +35,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
+
+import static com.ljube.bajtaktarov.quiz.R.id.progressBar;
 
 public class CreateQuizActivity extends AppCompatActivity {
 
@@ -46,6 +57,7 @@ public class CreateQuizActivity extends AppCompatActivity {
     long timerMiliSeconds = 11000;
     CountDownTimer MainTimer, SecondTimer;
     Boolean isT2Running = false;
+    ProgressBar progressBar;
 
 
     @Override
@@ -60,13 +72,13 @@ public class CreateQuizActivity extends AppCompatActivity {
         PointsTextView = (TextView) findViewById(R.id.PointsText);
         newgameButton = (Button) findViewById(R.id.newGameButton);
         MainLayout = (RelativeLayout) findViewById(R.id.firstlayout);
-        readCVS();
-        playSound(2);
+        // readCVS();
+        readFirebase();
         centerTitle();
         setTitle(CalledFrom.getStringExtra("Title"));
         QuestionStructure = CalledFrom.getStringExtra("QuestionStructure");
         actionBarToolbar = (Toolbar) findViewById(R.id.action_bar);
-        actionBarToolbar.setTitleTextColor(Color.parseColor("#33CC33"));
+        actionBarToolbar.setTitleTextColor(Color.parseColor("#000000"));
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
@@ -85,7 +97,7 @@ public class CreateQuizActivity extends AppCompatActivity {
                 StartTimers();
             }
         });
-        CreateQuestion();
+//        CreateQuestion();
         newgameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -114,7 +126,14 @@ public class CreateQuizActivity extends AppCompatActivity {
                 MainTimer.start();
             }
         };
-        StartTimers();
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.VISIBLE);
+
+//        newgameButton.setEnabled(false);
+        newgameButton.setVisibility(View.INVISIBLE);
+        list.setVisibility(View.INVISIBLE);
+        QuestionTextView.setVisibility(View.INVISIBLE);
+//        StartTimers();
 
     }
 
@@ -217,9 +236,9 @@ public class CreateQuizActivity extends AppCompatActivity {
         list.setAdapter(adapter);
     }
 
-    void readCVS() {
-        String Text = "";
-        try {
+//    void readCVS() {
+//        String Text = "";
+//        try {
 //            int resourceID = this.getResources().getIdentifier(QuestionType, "raw", this.getPackageName());
 //            Scanner scan = new Scanner(getResources().openRawResource(resourceID));
 //            while (scan.hasNextLine()) {
@@ -234,30 +253,78 @@ public class CreateQuizActivity extends AppCompatActivity {
 //                QuestionData newQuestion = new QuestionData();
 //                newQuestion.Answer = nextLine[0];
 //                newQuestion.Question = nextLine[1];
-//                newQuestion.imgid = getResources().getIdentifier(nextLine[2], "drawable", getPackageName());
+//                newQuestion.imgid = nextLine[2];
 //                QuestionList.add(newQuestion);
 //            }
-            QuestionData q1 = new QuestionData();
-            q1.Answer = "Answer1";
-            q1.Question = "Question1";
-            q1.imgid = "https://upload.wikimedia.org/wikipedia/en/thumb/4/47/FC_Barcelona_%28crest%29.svg/142px-FC_Barcelona_%28crest%29.svg.png";
-            QuestionList.add(q1);
-            QuestionData q2 = new QuestionData();
-            q2.Answer = "Answer2";
-            q2.Question = "Question2";
-            q2.imgid = "https://upload.wikimedia.org/wikipedia/en/thumb/4/47/FC_Barcelona_%28crest%29.svg/142px-FC_Barcelona_%28crest%29.svg.png";
-            QuestionList.add(q2);
-            QuestionData q3 = new QuestionData();
-            q3.Answer = "Answer3";
-            q3.Question = "Question3";
-            q3.imgid = "https://upload.wikimedia.org/wikipedia/en/thumb/4/47/FC_Barcelona_%28crest%29.svg/142px-FC_Barcelona_%28crest%29.svg.png";
-            QuestionList.add(q3);
-            QuestionData q4 = new QuestionData();
-            q4.Answer = "Answer4";
-            q4.Question = "Question4";
-            q4.imgid = "https://upload.wikimedia.org/wikipedia/en/thumb/4/47/FC_Barcelona_%28crest%29.svg/142px-FC_Barcelona_%28crest%29.svg.png";
-            QuestionList.add(q4);
-            numOfQuestions = QuestionList.size();
+//            FirebaseDatabase database = FirebaseDatabase.getInstance();
+//            DatabaseReference myRef = database.getReference(QuestionType);
+//            int i = 0;
+//            for (QuestionData q : QuestionList) {
+//                myRef.push().setValue(q);
+//            }
+//            numOfQuestions = QuestionList.size();
+//        } catch (Exception ex) {
+//            Intent intent = new Intent();
+//            setResult(MainActivity.CancelReqCode, intent);
+//            finish();
+//        }
+//    }
+
+
+    void readFirebase() {
+        try {
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            DatabaseReference myRef = database.getReference(QuestionType);
+            myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    numOfQuestions = QuestionList.size();
+                    CreateQuestion();
+                    StartTimers();
+                    progressBar.setVisibility(View.INVISIBLE);
+                    newgameButton.setVisibility(View.VISIBLE);
+                    list.setVisibility(View.VISIBLE);
+                    QuestionTextView.setVisibility(View.VISIBLE);
+                    playSound(2);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError error) {
+                    Intent intent = new Intent();
+                    setResult(MainActivity.CancelReqCode, intent);
+                    finish();
+                }
+            });
+            myRef.addChildEventListener(new ChildEventListener() {
+                @Override
+                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                    QuestionData newQuestion = new QuestionData();
+                    newQuestion = dataSnapshot.getValue(QuestionData.class);
+                    QuestionList.add(newQuestion);
+                }
+
+                @Override
+                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+                }
+
+                @Override
+                public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+                }
+
+                @Override
+                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Intent intent = new Intent();
+                    setResult(MainActivity.CancelReqCode, intent);
+                    finish();
+                }
+            });
         } catch (Exception ex) {
             Intent intent = new Intent();
             setResult(MainActivity.CancelReqCode, intent);

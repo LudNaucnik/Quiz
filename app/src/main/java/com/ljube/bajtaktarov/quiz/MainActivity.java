@@ -11,8 +11,11 @@ import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.AppCompatTextView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -47,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
         NewGameButton.setOnClickListener(newGameMain);
         CapitalCityButton.setOnClickListener(capitalCityOnClick);
         ButterKnife.bind(this);
+        centerTitle();
+        setTitle("Quiz");
     }
 
 
@@ -157,6 +162,30 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == PickPhotoReqCode) {
             Uri selectedImageUri = data.getData();
             imgidText.setText(selectedImageUri.getPath());
+        }
+    }
+
+    private void centerTitle() {
+        ArrayList<View> textViews = new ArrayList<>();
+        getWindow().getDecorView().findViewsWithText(textViews, getTitle(), View.FIND_VIEWS_WITH_TEXT);
+        if (textViews.size() > 0) {
+            AppCompatTextView appCompatTextView = null;
+            if (textViews.size() == 1) {
+                appCompatTextView = (AppCompatTextView) textViews.get(0);
+            } else {
+                for (View v : textViews) {
+                    if (v.getParent() instanceof Toolbar) {
+                        appCompatTextView = (AppCompatTextView) v;
+                        break;
+                    }
+                }
+            }
+            if (appCompatTextView != null) {
+                ViewGroup.LayoutParams params = appCompatTextView.getLayoutParams();
+                params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+                appCompatTextView.setLayoutParams(params);
+                appCompatTextView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            }
         }
     }
 }
