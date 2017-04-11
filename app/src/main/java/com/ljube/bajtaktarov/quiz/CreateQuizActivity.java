@@ -261,7 +261,7 @@ public class CreateQuizActivity extends AppCompatActivity {
         try {
             FirebaseDatabase database = FirebaseDatabase.getInstance();
             DatabaseReference myRef = database.getReference(QuestionType);
-            myRef.addValueEventListener(new ValueEventListener() {
+            myRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     QuestionData newQuestion = new QuestionData();
