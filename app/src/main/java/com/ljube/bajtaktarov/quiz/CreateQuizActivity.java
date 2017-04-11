@@ -1,6 +1,5 @@
 package com.ljube.bajtaktarov.quiz;
 
-import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.graphics.Color;
 import android.media.MediaPlayer;
@@ -13,30 +12,24 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.opencsv.CSVReader;
-
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
-
-import static com.ljube.bajtaktarov.quiz.R.id.progressBar;
 
 public class CreateQuizActivity extends AppCompatActivity {
 
@@ -72,7 +65,7 @@ public class CreateQuizActivity extends AppCompatActivity {
         PointsTextView = (TextView) findViewById(R.id.PointsText);
         newgameButton = (Button) findViewById(R.id.newGameButton);
         MainLayout = (RelativeLayout) findViewById(R.id.firstlayout);
-        // readCVS();
+//        UploadCVStoFirebase();
         readFirebase();
         centerTitle();
         setTitle(CalledFrom.getStringExtra("Title"));
@@ -97,7 +90,6 @@ public class CreateQuizActivity extends AppCompatActivity {
                 StartTimers();
             }
         });
-//        CreateQuestion();
         newgameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -128,12 +120,9 @@ public class CreateQuizActivity extends AppCompatActivity {
         };
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         progressBar.setVisibility(View.VISIBLE);
-
-//        newgameButton.setEnabled(false);
         newgameButton.setVisibility(View.INVISIBLE);
         list.setVisibility(View.INVISIBLE);
         QuestionTextView.setVisibility(View.INVISIBLE);
-//        StartTimers();
 
     }
 
@@ -236,39 +225,37 @@ public class CreateQuizActivity extends AppCompatActivity {
         list.setAdapter(adapter);
     }
 
-//    void readCVS() {
-//        String Text = "";
-//        try {
-//            int resourceID = this.getResources().getIdentifier(QuestionType, "raw", this.getPackageName());
-//            Scanner scan = new Scanner(getResources().openRawResource(resourceID));
-//            while (scan.hasNextLine()) {
-//                String line = scan.nextLine();
-//                Text += line + "\n";
-//            }
-//            scan.close();
-//            Log.d("Inner", Text);
-//            CSVReader reader = new CSVReader(new StringReader(Text));
-//            String[] nextLine;
-//            while ((nextLine = reader.readNext()) != null) {
-//                QuestionData newQuestion = new QuestionData();
-//                newQuestion.Answer = nextLine[0];
-//                newQuestion.Question = nextLine[1];
-//                newQuestion.imgid = nextLine[2];
-//                QuestionList.add(newQuestion);
-//            }
-//            FirebaseDatabase database = FirebaseDatabase.getInstance();
-//            DatabaseReference myRef = database.getReference(QuestionType);
-//            int i = 0;
-//            for (QuestionData q : QuestionList) {
-//                myRef.push().setValue(q);
-//            }
-//            numOfQuestions = QuestionList.size();
-//        } catch (Exception ex) {
-//            Intent intent = new Intent();
-//            setResult(MainActivity.CancelReqCode, intent);
-//            finish();
-//        }
-//    }
+    void UploadCVStoFirebase() {
+        String Text = "";
+        try {
+            int resourceID = this.getResources().getIdentifier(QuestionType, "raw", this.getPackageName());
+            Scanner scan = new Scanner(getResources().openRawResource(resourceID));
+            while (scan.hasNextLine()) {
+                String line = scan.nextLine();
+                Text += line + "\n";
+            }
+            scan.close();
+            CSVReader reader = new CSVReader(new StringReader(Text));
+            String[] nextLine;
+            while ((nextLine = reader.readNext()) != null) {
+                QuestionData newQuestion = new QuestionData();
+                newQuestion.Answer = nextLine[0];
+                newQuestion.Question = nextLine[1];
+                newQuestion.imgid = nextLine[2];
+                QuestionList.add(newQuestion);
+            }
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            DatabaseReference myRef = database.getReference(QuestionType);
+            int i = 0;
+            for (QuestionData q : QuestionList) {
+                myRef.push().setValue(q);
+            }
+        } catch (Exception ex) {
+            Intent intent = new Intent();
+            setResult(MainActivity.CancelReqCode, intent);
+            finish();
+        }
+    }
 
 
     void readFirebase() {
@@ -283,7 +270,6 @@ public class CreateQuizActivity extends AppCompatActivity {
                         newQuestion = child.getValue(QuestionData.class);
                         QuestionList.add(newQuestion);
                     }
-                    Log.d("123","Num of Questions: "+ String.valueOf(QuestionList.size()));
                     numOfQuestions = QuestionList.size();
                     CreateQuestion();
                     CountDownTimer TimerStart = new CountDownTimer(1000, 1000) {
