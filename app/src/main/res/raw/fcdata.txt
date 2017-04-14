@@ -1,20 +1,20 @@
-Arsenal,England,arsenallogo
-Milan,Italy,milanlogo
-Barcelona,Spain,barcelonalogo
-Bayern,Germany,bayernlogo
-PSG,France,psglogo
-Porto,Portugal,portologo
-NK Zagreb,Croatia,zagreblogo
-FK Partizan,Serbia,partizanlogo
-FK Vardar,Macedonia,vardarlogo
-FC Zenit,Russia,zenitlogo
-Beijing Sinobo,China,sinobologo
-ACS Poli,Romania,polilogo,
-PFC Levski,Bulgaria,levskilogo
-Fenerbahçe,Turkey,fenerlogo
-Busan IPark,Korea,busanlogo
-Bylis Ballsh,Albania,bylislogo
-Békéscsaba,Hungary,bekescsabalogo
-Arka Gdynia,Poland,arkalogo
-Aktobe,Kazakhstan,aktobelogo
-Allsvenskan,Sweden,allsvenskanlogo
+Arsenal,England,https://firebasestorage.googleapis.com/v0/b/quiz-854ec.appspot.com/o/FootballClub%2Farsenallogo.png?alt=media&token=3c253b65-d61a-48f5-8f03-e329a991f5be
+Milan,Italy,https://firebasestorage.googleapis.com/v0/b/quiz-854ec.appspot.com/o/FootballClub%2Fmilanlogo.png?alt=media&token=ac7f873f-b2ec-46a1-88f0-98cd05c36879
+Barcelona,Spain,https://firebasestorage.googleapis.com/v0/b/quiz-854ec.appspot.com/o/FootballClub%2Fbarcelonalogo.png?alt=media&token=118c3b69-8ade-4453-83e7-32a501da25a0
+Bayern,Germany,https://firebasestorage.googleapis.com/v0/b/quiz-854ec.appspot.com/o/FootballClub%2Fbayernlogo.png?alt=media&token=a7271b8c-9465-45c4-b8a9-1ca47bf3cedf
+PSG,France,https://firebasestorage.googleapis.com/v0/b/quiz-854ec.appspot.com/o/FootballClub%2Fpsglogo.png?alt=media&token=812c61f5-47f2-499c-a585-4a009fbb608a
+Porto,Portugal,https://firebasestorage.googleapis.com/v0/b/quiz-854ec.appspot.com/o/FootballClub%2Fportologo.png?alt=media&token=95a83fc7-70df-4b42-945d-5ae39486677a
+NK Zagreb,Croatia,https://firebasestorage.googleapis.com/v0/b/quiz-854ec.appspot.com/o/FootballClub%2Fzagreblogo.png?alt=media&token=75cb41ae-9d7c-49df-a7a5-93c85b30ac38
+FK Partizan,Serbia,https://firebasestorage.googleapis.com/v0/b/quiz-854ec.appspot.com/o/FootballClub%2Fpartizanlogo.png?alt=media&token=7cd1150d-7ad1-4283-806c-082b835c1b82
+FK Vardar,Macedonia,https://firebasestorage.googleapis.com/v0/b/quiz-854ec.appspot.com/o/FootballClub%2Fvardarlogo.png?alt=media&token=0ea07a70-097a-4f80-8c19-7934dd6d5ed0
+FC Zenit,Russia,https://firebasestorage.googleapis.com/v0/b/quiz-854ec.appspot.com/o/FootballClub%2Fzenitlogo.png?alt=media&token=233e500f-35a4-4c7b-8458-217952bc8983
+Beijing Sinobo,China,https://firebasestorage.googleapis.com/v0/b/quiz-854ec.appspot.com/o/FootballClub%2Fsinobologo.png?alt=media&token=31414309-7ef9-4eab-a9de-a4b1d6955304
+ACS Poli,Romania,https://firebasestorage.googleapis.com/v0/b/quiz-854ec.appspot.com/o/FootballClub%2Fpolilogo.png?alt=media&token=5f94adbe-bdcc-4976-94a6-a1de6b077040
+PFC Levski,Bulgaria,https://firebasestorage.googleapis.com/v0/b/quiz-854ec.appspot.com/o/FootballClub%2Flevskilogo.png?alt=media&token=bfef78a1-7ed0-4ee2-b94c-e8bf8b10080b
+Fenerbahçe,Turkey,https://firebasestorage.googleapis.com/v0/b/quiz-854ec.appspot.com/o/FootballClub%2Ffenerlogo.png?alt=media&token=9a64df21-1bdf-4a00-a7cd-3a52e8f31282
+Busan IPark,Korea,https://firebasestorage.googleapis.com/v0/b/quiz-854ec.appspot.com/o/FootballClub%2Fbusanlogo.png?alt=media&token=540170da-88ed-4460-90e6-3e47ca6c7037
+Bylis Ballsh,Albania,https://firebasestorage.googleapis.com/v0/b/quiz-854ec.appspot.com/o/FootballClub%2Fbylislogo.png?alt=media&token=5a85896c-e409-4cc9-9ea8-f15815df1eed
+Békéscsaba,Hungary,https://firebasestorage.googleapis.com/v0/b/quiz-854ec.appspot.com/o/FootballClub%2Fbekescsabalogo.png?alt=media&token=d4558ceb-0a95-48aa-a6ea-8338ae6446f6
+Arka Gdynia,Poland,https://firebasestorage.googleapis.com/v0/b/quiz-854ec.appspot.com/o/FootballClub%2Farkalogo.png?alt=media&token=6b97c992-8d26-4c16-954a-2715a15369ab
+Aktobe,Kazakhstan,https://firebasestorage.googleapis.com/v0/b/quiz-854ec.appspot.com/o/FootballClub%2Faktobelogo.png?alt=media&token=029e698b-6227-429e-88e1-74adb2c68fa2
+Allsvenskan,Sweden,https://firebasestorage.googleapis.com/v0/b/quiz-854ec.appspot.com/o/FootballClub%2Fallsvenskanlogo.png?alt=media&token=bff23979-c08b-4193-b8f9-c4c6b6c69b3d
