@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
@@ -57,6 +59,9 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         centerTitle();
         setTitle("Quiz");
+        if (isOnline() == false) {
+            CreateOfflineAlert();
+        }
     }
 
 
@@ -137,6 +142,37 @@ public class MainActivity extends AppCompatActivity {
         builder.show();
     }
 
+    void CreateOfflineAlert() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Connection Error");
+        builder.setMessage("Looks like your device is not connected to internet.\nPlease connect to internet and try again.")
+                .setCancelable(false)
+                .setPositiveButton("Exit", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        MainActivity.this.finish();
+                    }
+                })
+                .setNegativeButton("Retry", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        if (isOnline() == false) {
+                            CreateOfflineAlert();
+                        }
+                    }
+                });
+        builder.create();
+        builder.show();
+    }
+
+    public boolean isOnline() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if (netInfo != null && netInfo.isConnectedOrConnecting()) {
+            return true;
+        }
+        return false;
+    }
+
     View.OnClickListener FCButtonOnClick = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -166,10 +202,12 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == FCReqCode) {
             Points += data.getIntExtra("Points", 0);
             PointsTextView.setText("Points " + String.valueOf(Points));
+            FCButton.setEnabled(false);
         }
         if (requestCode == CapCityReqCode) {
             Points += data.getIntExtra("Points", 0);
             PointsTextView.setText("Points " + String.valueOf(Points));
+            CapitalCityButton.setEnabled(false);
         }
         if (requestCode == CancelReqCode) {
             PointsTextView.setText("Points " + String.valueOf(Points));
