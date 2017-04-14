@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -43,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     Button FCButton, CapitalCityButton, NewGameButton;
     TextView PointsTextView, imgidText, QuestionText, AnswerText, ImageURL;
     int Points = 0;
+    MediaPlayer mp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,9 +63,15 @@ public class MainActivity extends AppCompatActivity {
         setTitle("Quiz");
         if (isOnline() == false) {
             CreateOfflineAlert();
+        } else {
+            PlayNewgamesound();
         }
     }
 
+    void PlayNewgamesound() {
+        mp = MediaPlayer.create(this, R.raw.ready);
+        mp.start();
+    }
 
     View.OnClickListener newGameMain = new View.OnClickListener() {
         @Override
@@ -75,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
                 CapitalCityButton.setEnabled(true);
                 Points = 0;
                 PointsTextView.setText("Points " + String.valueOf(Points));
+                PlayNewgamesound();
             }
         }
     };
