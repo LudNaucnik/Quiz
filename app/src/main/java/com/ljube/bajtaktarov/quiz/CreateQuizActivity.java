@@ -342,6 +342,7 @@ public class CreateQuizActivity extends AppCompatActivity {
         }
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             Intent intent = new Intent();
+            intent.putExtra("Points", Points);
             setResult(MainActivity.CancelReqCode, intent);
         }
         return super.onKeyDown(keyCode, event);

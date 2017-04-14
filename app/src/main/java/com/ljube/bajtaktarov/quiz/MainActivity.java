@@ -232,6 +232,7 @@ public class MainActivity extends AppCompatActivity {
             CapitalCityButton.setEnabled(false);
         }
         if (requestCode == CancelReqCode) {
+            Points += data.getIntExtra("Points", 0);
             PointsTextView.setText("Points " + String.valueOf(Points));
         }
         if (requestCode == PickPhotoReqCode) {
