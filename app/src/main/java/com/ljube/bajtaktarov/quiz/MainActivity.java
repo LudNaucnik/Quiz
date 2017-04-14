@@ -68,14 +68,22 @@ public class MainActivity extends AppCompatActivity {
     View.OnClickListener newGameMain = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Points = 0;
-            PointsTextView.setText("Points " + String.valueOf(Points));
+            if (isOnline() == false) {
+                CreateOfflineAlert();
+            } else {
+                Points = 0;
+                PointsTextView.setText("Points " + String.valueOf(Points));
+            }
         }
     };
 
     @OnClick(R.id.AddButton)
     public void AddData() {
-        CreateChooseCategoryAlert();
+        if (isOnline() == false) {
+            CreateOfflineAlert();
+        } else {
+            CreateChooseCategoryAlert();
+        }
     }
 
 
@@ -118,18 +126,22 @@ public class MainActivity extends AppCompatActivity {
                 .setPositiveButton("Submit", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        FirebaseDatabase database = FirebaseDatabase.getInstance();
-                        DatabaseReference myRef = database.getReference("SubmitQuestion");
-                        SubmitQuestionData question = new SubmitQuestionData();
-                        question.Answer = AnswerText.getText().toString();
-                        question.Question = QuestionText.getText().toString();
-                        question.imgid = ImageURL.getText().toString();
-                        question.QuestionCategory = Category;
-                        if (question.Answer.length() == 0 || question.Question.length() == 0 || question.imgid.length() == 0) {
-                            Toast.makeText(MainActivity.this, "Fill all the field before submitting questions.", Toast.LENGTH_LONG).show();
+                        if (isOnline() == false) {
+                            CreateOfflineAlert();
                         } else {
-                            myRef.push().setValue(question);
-                            Toast.makeText(MainActivity.this, "Question is submitted", Toast.LENGTH_LONG).show();
+                            FirebaseDatabase database = FirebaseDatabase.getInstance();
+                            DatabaseReference myRef = database.getReference("SubmitQuestion");
+                            SubmitQuestionData question = new SubmitQuestionData();
+                            question.Answer = AnswerText.getText().toString();
+                            question.Question = QuestionText.getText().toString();
+                            question.imgid = ImageURL.getText().toString();
+                            question.QuestionCategory = Category;
+                            if (question.Answer.length() == 0 || question.Question.length() == 0 || question.imgid.length() == 0) {
+                                Toast.makeText(MainActivity.this, "Fill all the field before submitting questions.", Toast.LENGTH_LONG).show();
+                            } else {
+                                myRef.push().setValue(question);
+                                Toast.makeText(MainActivity.this, "Question is submitted", Toast.LENGTH_LONG).show();
+                            }
                         }
                     }
                 })
@@ -176,24 +188,32 @@ public class MainActivity extends AppCompatActivity {
     View.OnClickListener FCButtonOnClick = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Intent intent = new Intent(MainActivity.this, CreateQuizActivity.class);
-            intent.putExtra("DataType", "fcdata");
-            intent.putExtra("QuestionStructure", "Which FC is from ");
-            intent.putExtra("Title", "Football Clubs");
-            intent.putExtra("ReqCode", FCReqCode);
-            startActivityForResult(intent, FCReqCode);
+            if (isOnline() == false) {
+                CreateOfflineAlert();
+            } else {
+                Intent intent = new Intent(MainActivity.this, CreateQuizActivity.class);
+                intent.putExtra("DataType", "fcdata");
+                intent.putExtra("QuestionStructure", "Which FC is from ");
+                intent.putExtra("Title", "Football Clubs");
+                intent.putExtra("ReqCode", FCReqCode);
+                startActivityForResult(intent, FCReqCode);
+            }
         }
     };
 
     View.OnClickListener capitalCityOnClick = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Intent intent = new Intent(MainActivity.this, CreateQuizActivity.class);
-            intent.putExtra("DataType", "capitalcitydata");
-            intent.putExtra("QuestionStructure", "Which country has capital city ");
-            intent.putExtra("Title", "Capital Cities");
-            intent.putExtra("ReqCode", CapCityReqCode);
-            startActivityForResult(intent, CapCityReqCode);
+            if (isOnline() == false) {
+                CreateOfflineAlert();
+            } else {
+                Intent intent = new Intent(MainActivity.this, CreateQuizActivity.class);
+                intent.putExtra("DataType", "capitalcitydata");
+                intent.putExtra("QuestionStructure", "Which country has capital city ");
+                intent.putExtra("Title", "Capital Cities");
+                intent.putExtra("ReqCode", CapCityReqCode);
+                startActivityForResult(intent, CapCityReqCode);
+            }
         }
     };
 
