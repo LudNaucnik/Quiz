@@ -65,7 +65,7 @@ public class CreateQuizActivity extends AppCompatActivity {
         PointsTextView = (TextView) findViewById(R.id.PointsText);
         newgameButton = (Button) findViewById(R.id.newGameButton);
         MainLayout = (RelativeLayout) findViewById(R.id.firstlayout);
-        UploadCVStoFirebase();
+//        UploadCVStoFirebase();
         readFirebase();
         centerTitle();
         setTitle(CalledFrom.getStringExtra("Title"));
