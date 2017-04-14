@@ -169,7 +169,7 @@ public class MainActivity extends AppCompatActivity {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Connection Error");
-        builder.setMessage("Looks like your device is not connected to internet.\nPlease connect to internet and try again.")
+        builder.setMessage("Looks like your device is not connected to internet. Please connect to internet and try again.")
                 .setCancelable(false)
                 .setPositiveButton("Exit", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {

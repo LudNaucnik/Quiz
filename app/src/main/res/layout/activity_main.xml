@@ -37,17 +37,17 @@
         android:layout_alignParentStart="true"
         android:layout_marginStart="17dp"
         android:text="New Game"
-        android:textAllCaps="false"/>
+        android:textAllCaps="false" />
 
     <RelativeLayout
+        android:id="@+id/relativeLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/pointsMainText"
         android:layout_below="@+id/textView2"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="42dp"
         android:layout_marginBottom="30dp"
-        android:id="@+id/relativeLayout">
+        android:layout_marginTop="42dp">
 
         <Button
             android:id="@+id/capitalCityButton"
@@ -60,7 +60,8 @@
             android:layout_marginRight="43dp"
             android:layout_marginTop="29dp"
             android:text="Capital City"
-            android:textAllCaps="false" />
+            android:textAllCaps="false"
+            android:textSize="16dp" />
 
         <Button
             android:id="@+id/fcButton"
@@ -75,6 +76,35 @@
             android:text="Football"
             android:textAllCaps="false" />
 
+        <Button
+            android:id="@+id/button3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/fcButton"
+            android:layout_below="@+id/fcButton"
+            android:layout_marginTop="34dp"
+            android:text="Caregory 3"
+            android:textAllCaps="false" />
+
+        <Button
+            android:id="@+id/button4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/capitalCityButton"
+            android:layout_alignTop="@+id/button3"
+            android:text="Category 4"
+            android:textAllCaps="false" />
+
+        <Button
+            android:id="@+id/HighScoreButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="36dp"
+            android:text="High Scores"
+            android:textAllCaps="false" />
+
     </RelativeLayout>
 
     <Button
@@ -86,7 +116,7 @@
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="14dp"
         android:text="Submit Data"
-        android:textAllCaps="false"/>
+        android:textAllCaps="false" />
 
 
 </RelativeLayout>
