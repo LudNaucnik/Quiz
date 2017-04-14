@@ -81,7 +81,6 @@ public class CreateQuizActivity extends AppCompatActivity {
                     Points++;
                     playSound(1);
                 } else {
-                    Points--;
                     playSound(0);
                 }
                 numQuestion++;
@@ -100,6 +99,7 @@ public class CreateQuizActivity extends AppCompatActivity {
                 PointsTextView.setText(String.valueOf(Points));
                 CreateQuestion();
                 StartTimers();
+                newgameButton.setEnabled(false);
             }
         });
         MainTimer = new CountDownTimer(11000, 1000) {
@@ -111,7 +111,6 @@ public class CreateQuizActivity extends AppCompatActivity {
 
             @Override
             public void onFinish() {
-                Points--;
                 playSound(0);
                 PointsTextView.setText(String.valueOf(Points));
                 CreateQuestion();
@@ -315,7 +314,6 @@ public class CreateQuizActivity extends AppCompatActivity {
 
             @Override
             public void onFinish() {
-                Points--;
                 playSound(0);
                 PointsTextView.setText(String.valueOf(Points));
                 CreateQuestion();

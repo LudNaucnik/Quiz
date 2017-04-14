@@ -71,6 +71,8 @@ public class MainActivity extends AppCompatActivity {
             if (isOnline() == false) {
                 CreateOfflineAlert();
             } else {
+                FCButton.setEnabled(true);
+                CapitalCityButton.setEnabled(true);
                 Points = 0;
                 PointsTextView.setText("Points " + String.valueOf(Points));
             }
