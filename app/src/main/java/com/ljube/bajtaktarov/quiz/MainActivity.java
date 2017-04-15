@@ -18,11 +18,13 @@ import android.os.Bundle;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,8 +42,8 @@ import butterknife.OnEditorAction;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static final int CancelReqCode = 8906, FCReqCode = 8907, CapCityReqCode = 8908, PickPhotoReqCode = 8909, MoviesDirectorReqCode = 8910, MountainsReqCode = 8911;
-    Button FCButton, CapitalCityButton, NewGameButton, MoviesDirectorButton, MountainsButton;
+    public static final int CancelReqCode = 8906, FCReqCode = 8907, CapCityReqCode = 8908, PickPhotoReqCode = 8909, MoviesDirectorReqCode = 8910, MountainsReqCode = 8911, HighScoreReqCode = 8912;
+    Button FCButton, CapitalCityButton, NewGameButton, MoviesDirectorButton, MountainsButton, HighscoreButton;
     TextView PointsTextView, imgidText, QuestionText, AnswerText, ImageURL;
     int Points = 0;
     MediaPlayer mp;
@@ -60,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
         CapitalCityButton.setOnClickListener(capitalCityOnClick);
         MoviesDirectorButton = (Button) findViewById(R.id.moviesDirector);
         MountainsButton = (Button) findViewById(R.id.MountainButton);
+        HighscoreButton = (Button) findViewById(R.id.HighScoreButton);
         ButterKnife.bind(this);
         centerTitle();
         setTitle("Quiz");
@@ -91,6 +94,17 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     };
+
+    @OnClick(R.id.HighScoreButton)
+    public void HighScoreButtonClick() {
+        if (isOnline() == false) {
+            CreateOfflineAlert();
+        } else {
+            Intent intent = new Intent(MainActivity.this, HighScoreActivity.class);
+            intent.putExtra("ReqCode", HighScoreReqCode);
+            startActivityForResult(intent, HighScoreReqCode);
+        }
+    }
 
     @OnClick(R.id.AddButton)
     public void AddData() {
@@ -126,6 +140,43 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra("Title", "Mountains");
             intent.putExtra("ReqCode", MountainsReqCode);
             startActivityForResult(intent, MountainsReqCode);
+        }
+    }
+
+    void CheckHighScoreForSubmit() {
+        if (FCButton.isEnabled() == false && CapitalCityButton.isEnabled() == false && MountainsButton.isEnabled() == false && MoviesDirectorButton.isEnabled() == false) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Submit your high score");
+            final EditText input = new EditText(this);
+            input.setHint("Name");
+            builder.setView(input);
+            builder.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    String name = input.getText().toString();
+                    if (name.length() != 0) {
+                        HighscoreData highscore = new HighscoreData();
+                        highscore.Name = name;
+                        highscore.Points = String.valueOf(Points);
+                        FirebaseDatabase database = FirebaseDatabase.getInstance();
+                        DatabaseReference myRef = database.getReference("HighScores");
+                        myRef.push().setValue(highscore);
+                        Toast.makeText(MainActivity.this, "High Scores Submitted", Toast.LENGTH_LONG).show();
+                        NewGameButton.callOnClick();
+                    } else {
+                        Toast.makeText(MainActivity.this, "Please fill a name", Toast.LENGTH_LONG).show();
+                        CheckHighScoreForSubmit();
+                    }
+                }
+            });
+            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                    NewGameButton.callOnClick();
+                }
+            });
+            builder.show();
         }
     }
 
@@ -292,6 +343,8 @@ public class MainActivity extends AppCompatActivity {
             PointsTextView.setText("Points " + String.valueOf(Points));
             MountainsButton.setEnabled(false);
         }
+        if (requestCode == HighScoreReqCode) {
+        }
         if (requestCode == PickPhotoReqCode) {
 //            Uri selectedImageUri = data.getData();
 //            imgidText.setText(selectedImageUri.getPath());
@@ -313,6 +366,7 @@ public class MainActivity extends AppCompatActivity {
 //                }
 //            });
         }
+        CheckHighScoreForSubmit();
     }
 
     private void centerTitle() {
@@ -337,5 +391,14 @@ public class MainActivity extends AppCompatActivity {
                 appCompatTextView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
             }
         }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_HOME) {
+            this.moveTaskToBack(true);
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }
