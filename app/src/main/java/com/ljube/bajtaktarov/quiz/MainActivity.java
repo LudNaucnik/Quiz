@@ -144,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
                         if (which == 2) {
                             CreateAddDataAlert("Movie Directors");
                         }
-                        if (which == 1) {
+                        if (which == 3) {
                             CreateAddDataAlert("Mountains");
                         }
                     }
