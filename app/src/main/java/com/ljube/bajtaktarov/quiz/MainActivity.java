@@ -40,8 +40,8 @@ import butterknife.OnEditorAction;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static final int CancelReqCode = 8906, FCReqCode = 8907, CapCityReqCode = 8908, PickPhotoReqCode = 8909;
-    Button FCButton, CapitalCityButton, NewGameButton;
+    public static final int CancelReqCode = 8906, FCReqCode = 8907, CapCityReqCode = 8908, PickPhotoReqCode = 8909, MoviesDirectorReqCode = 8910, MountainsReqCode = 8911;
+    Button FCButton, CapitalCityButton, NewGameButton, MoviesDirectorButton, MountainsButton;
     TextView PointsTextView, imgidText, QuestionText, AnswerText, ImageURL;
     int Points = 0;
     MediaPlayer mp;
@@ -58,6 +58,8 @@ public class MainActivity extends AppCompatActivity {
         FCButton.setOnClickListener(FCButtonOnClick);
         NewGameButton.setOnClickListener(newGameMain);
         CapitalCityButton.setOnClickListener(capitalCityOnClick);
+        MoviesDirectorButton = (Button) findViewById(R.id.moviesDirector);
+        MountainsButton = (Button) findViewById(R.id.MountainButton);
         ButterKnife.bind(this);
         centerTitle();
         setTitle("Quiz");
@@ -81,6 +83,8 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 FCButton.setEnabled(true);
                 CapitalCityButton.setEnabled(true);
+                MoviesDirectorButton.setEnabled(true);
+                MountainsButton.setEnabled(true);
                 Points = 0;
                 PointsTextView.setText("Points " + String.valueOf(Points));
                 PlayNewgamesound();
@@ -97,6 +101,34 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @OnClick(R.id.moviesDirector)
+    public void MoviesDIrectorClick() {
+        if (isOnline() == false) {
+            CreateOfflineAlert();
+        } else {
+            Intent intent = new Intent(MainActivity.this, CreateQuizActivity.class);
+            intent.putExtra("DataType", "moviesdirectorsdata");
+            intent.putExtra("QuestionStructure", "Which movie is directed by ");
+            intent.putExtra("Title", "Movies Directors");
+            intent.putExtra("ReqCode", MoviesDirectorReqCode);
+            startActivityForResult(intent, MoviesDirectorReqCode);
+        }
+    }
+
+    @OnClick(R.id.MountainButton)
+    public void MountainButtonClick() {
+        if (isOnline() == false) {
+            CreateOfflineAlert();
+        } else {
+            Intent intent = new Intent(MainActivity.this, CreateQuizActivity.class);
+            intent.putExtra("DataType", "mountainsdata");
+            intent.putExtra("QuestionStructure", "From which country region is mountain ");
+            intent.putExtra("Title", "Mountains");
+            intent.putExtra("ReqCode", MountainsReqCode);
+            startActivityForResult(intent, MountainsReqCode);
+        }
+    }
+
 
     void CreateChooseCategoryAlert() {
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
@@ -108,6 +140,12 @@ public class MainActivity extends AppCompatActivity {
                         }
                         if (which == 1) {
                             CreateAddDataAlert("Capital City");
+                        }
+                        if (which == 2) {
+                            CreateAddDataAlert("Movie Directors");
+                        }
+                        if (which == 1) {
+                            CreateAddDataAlert("Mountains");
                         }
                     }
                 });
@@ -243,6 +281,16 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == CancelReqCode) {
             Points += data.getIntExtra("Points", 0);
             PointsTextView.setText("Points " + String.valueOf(Points));
+        }
+        if (requestCode == MoviesDirectorReqCode) {
+            Points += data.getIntExtra("Points", 0);
+            PointsTextView.setText("Points " + String.valueOf(Points));
+            MoviesDirectorButton.setEnabled(false);
+        }
+        if (requestCode == MountainsReqCode) {
+            Points += data.getIntExtra("Points", 0);
+            PointsTextView.setText("Points " + String.valueOf(Points));
+            MountainsButton.setEnabled(false);
         }
         if (requestCode == PickPhotoReqCode) {
 //            Uri selectedImageUri = data.getData();

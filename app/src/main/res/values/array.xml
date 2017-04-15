@@ -4,5 +4,7 @@
         name="categories">
         <item>Football Club</item>
         <item>Capital City</item>
+        <item>Movie Directors</item>
+        <item>Mountains</item>
     </string-array>
 </resources>

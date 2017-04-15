@@ -53,46 +53,43 @@
             android:id="@+id/capitalCityButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginEnd="43dp"
+            android:layout_marginEnd="46dp"
             android:layout_marginRight="43dp"
-            android:layout_marginTop="29dp"
-            android:text="Capital City"
+            android:layout_marginTop="19dp"
+            android:text="Capital Cities"
             android:textAllCaps="false"
-            android:textSize="16dp" />
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true" />
 
         <Button
             android:id="@+id/fcButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="62dp"
+            android:layout_marginStart="46dp"
+            android:text="Football Clubs"
+            android:textAllCaps="false"
             android:layout_alignBaseline="@+id/capitalCityButton"
             android:layout_alignBottom="@+id/capitalCityButton"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginLeft="62dp"
-            android:layout_marginStart="62dp"
-            android:text="Football"
-            android:textAllCaps="false" />
+            android:layout_alignParentStart="true" />
 
         <Button
-            android:id="@+id/button3"
+            android:id="@+id/moviesDirector"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/fcButton"
+            android:layout_alignEnd="@+id/fcButton"
             android:layout_below="@+id/fcButton"
-            android:layout_marginTop="34dp"
-            android:text="Caregory 3"
+            android:layout_marginTop="36dp"
+            android:text="Movie Directors"
             android:textAllCaps="false" />
 
         <Button
-            android:id="@+id/button4"
+            android:id="@+id/MountainButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignStart="@+id/capitalCityButton"
-            android:layout_alignTop="@+id/button3"
-            android:text="Category 4"
+            android:layout_alignTop="@+id/moviesDirector"
+            android:text="Mountains"
             android:textAllCaps="false" />
 
         <Button
