@@ -29,6 +29,6 @@
         android:paddingRight="30dp"
         android:textAlignment="center"
         android:paddingBottom="40dp"
-        android:dividerHeight="dp"/>
+        android:dividerHeight="2dp"/>
 
 </RelativeLayout>
