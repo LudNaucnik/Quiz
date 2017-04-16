@@ -8,7 +8,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -26,6 +28,9 @@ public class HighScoreActivity extends AppCompatActivity {
 
     ListView HighScoreList;
     List<HighscoreData> highscoreArraylist = new ArrayList<>();
+    ArrayList<String> HighScoreArrayString;
+    ArrayAdapter<String> HighScoreArrayAdapter;
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +39,13 @@ public class HighScoreActivity extends AppCompatActivity {
         setTitle("High Scores");
         centerTitle();
         HighScoreList = (ListView) findViewById(R.id.HighScoresList);
+        HighScoreList.setEnabled(false);
+        HighScoreArrayString = new ArrayList<>();
+        HighScoreArrayAdapter = new ArrayAdapter<String>(this, R.layout.highscore_listitem, R.id.itemtext, HighScoreArrayString);
+        HighScoreList.setAdapter(HighScoreArrayAdapter);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.VISIBLE);
+        readHighScore();
     }
 
     void readHighScore() {
@@ -58,9 +70,14 @@ public class HighScoreActivity extends AppCompatActivity {
                         }
                     }
                 });
-                for (HighscoreData data : highscoreArraylist) {
 
+                HighScoreArrayString.add("   Name   " + "    Points   ");
+                HighScoreArrayString.add(" ");
+                for (HighscoreData data : highscoreArraylist) {
+                    HighScoreArrayString.add(data.Name + " " + data.Points + " points");
+                    HighScoreArrayAdapter.notifyDataSetChanged();
                 }
+                progressBar.setVisibility(View.INVISIBLE);
             }
 
             @Override

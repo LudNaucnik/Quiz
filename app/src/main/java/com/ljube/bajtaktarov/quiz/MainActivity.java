@@ -17,6 +17,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -149,6 +150,7 @@ public class MainActivity extends AppCompatActivity {
             builder.setTitle("Submit your high score");
             final EditText input = new EditText(this);
             input.setHint("Name");
+            input.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
             builder.setView(input);
             builder.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
                 @Override
