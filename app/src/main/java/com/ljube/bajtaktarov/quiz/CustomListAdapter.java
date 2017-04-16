@@ -9,6 +9,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.squareup.picasso.Picasso;
 
 public class CustomListAdapter extends ArrayAdapter<String> {
@@ -30,7 +32,8 @@ public class CustomListAdapter extends ArrayAdapter<String> {
         TextView txtTitle = (TextView) rowView.findViewById(R.id.item);
         ImageView imageView = (ImageView) rowView.findViewById(R.id.icon);
         txtTitle.setText(itemname[position]);
-        Picasso.with(getContext()).load(String.valueOf(imgid[position])).into(imageView);
+        Glide.with(getContext()).load(String.valueOf(imgid[position])).diskCacheStrategy(DiskCacheStrategy.ALL).into(imageView);
+//        Picasso.with(getContext()).load(String.valueOf(imgid[position])).into(imageView);
         return rowView;
     }
 }
