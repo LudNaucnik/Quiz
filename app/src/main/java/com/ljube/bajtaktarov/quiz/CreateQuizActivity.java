@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -18,12 +19,14 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.opencsv.CSVReader;
+
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -49,7 +52,7 @@ public class CreateQuizActivity extends AppCompatActivity {
     List<QuestionData> passedQuestions = new ArrayList<>();
     long timerMiliSeconds = 11000;
     CountDownTimer MainTimer, SecondTimer;
-    Boolean isT2Running = false;
+    Boolean isT2Running = false, isBackButtonPressed;
     ProgressBar progressBar;
 
 
@@ -122,6 +125,7 @@ public class CreateQuizActivity extends AppCompatActivity {
         newgameButton.setVisibility(View.INVISIBLE);
         list.setVisibility(View.INVISIBLE);
         QuestionTextView.setVisibility(View.INVISIBLE);
+        isBackButtonPressed = false;
 
     }
 
@@ -264,12 +268,11 @@ public class CreateQuizActivity extends AppCompatActivity {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     QuestionData newQuestion = new QuestionData();
-                    for (DataSnapshot child: dataSnapshot.getChildren()) {
+                    for (DataSnapshot child : dataSnapshot.getChildren()) {
                         newQuestion = child.getValue(QuestionData.class);
                         QuestionList.add(newQuestion);
                     }
                     numOfQuestions = QuestionList.size();
-                    CreateQuestion();
                     CountDownTimer TimerStart = new CountDownTimer(1000, 1000) {
                         @Override
                         public void onTick(long millisUntilFinished) {
@@ -278,12 +281,15 @@ public class CreateQuizActivity extends AppCompatActivity {
 
                         @Override
                         public void onFinish() {
-                            StartTimers();
-                            progressBar.setVisibility(View.INVISIBLE);
-                            newgameButton.setVisibility(View.VISIBLE);
-                            list.setVisibility(View.VISIBLE);
-                            QuestionTextView.setVisibility(View.VISIBLE);
-                            playSound(2);
+                            if (isBackButtonPressed == false) {
+                                CreateQuestion();
+                                StartTimers();
+                                progressBar.setVisibility(View.INVISIBLE);
+                                newgameButton.setVisibility(View.VISIBLE);
+                                list.setVisibility(View.VISIBLE);
+                                QuestionTextView.setVisibility(View.VISIBLE);
+                                playSound(2);
+                            }
                         }
                     }.start();
                 }
@@ -323,12 +329,17 @@ public class CreateQuizActivity extends AppCompatActivity {
         if (isT2Running == true) {
             SecondTimer.start();
         }
+        if (isBackButtonPressed == true) {
+            isBackButtonPressed = false;
+            readFirebase();
+        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
         mp.stop();
+        isBackButtonPressed = true;
         isT2Running = true;
         MainTimer.cancel();
         SecondTimer.cancel();
@@ -344,6 +355,7 @@ public class CreateQuizActivity extends AppCompatActivity {
             Intent intent = new Intent();
             intent.putExtra("Points", Points);
             setResult(MainActivity.CancelReqCode, intent);
+            isBackButtonPressed = true;
         }
         return super.onKeyDown(keyCode, event);
     }
