@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -51,9 +53,11 @@ public class HighScoreActivity extends AppCompatActivity {
     void readHighScore() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("HighScores");
-        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                highscoreArraylist.clear();
+                HighScoreArrayString.clear();
                 HighscoreData highscore = new HighscoreData();
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
                     highscore = child.getValue(HighscoreData.class);
@@ -70,13 +74,13 @@ public class HighScoreActivity extends AppCompatActivity {
                         }
                     }
                 });
-
                 HighScoreArrayString.add("   Name   " + "    Points   ");
                 HighScoreArrayString.add(" ");
                 for (HighscoreData data : highscoreArraylist) {
                     HighScoreArrayString.add(data.Name + " " + data.Points + " points");
                     HighScoreArrayAdapter.notifyDataSetChanged();
                 }
+                HighScoreArrayAdapter.notifyDataSetChanged();
                 progressBar.setVisibility(View.INVISIBLE);
             }
 
