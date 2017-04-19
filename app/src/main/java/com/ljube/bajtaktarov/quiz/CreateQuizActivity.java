@@ -99,6 +99,7 @@ public class CreateQuizActivity extends AppCompatActivity {
                 playSound(2);
                 passedQuestions.clear();
                 Points = 0;
+                Points -= 5;
                 PointsTextView.setText(String.valueOf(Points));
                 CreateQuestion();
                 StartTimers();
