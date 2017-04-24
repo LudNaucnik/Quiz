@@ -29,8 +29,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.*;
 
 import java.io.File;
 import java.io.InputStream;
@@ -48,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
     TextView PointsTextView, imgidText, QuestionText, AnswerText, ImageURL;
     int Points = 0;
     MediaPlayer mp;
+    private StorageReference mStorageRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
         MountainsButton = (Button) findViewById(R.id.MountainButton);
         HighscoreButton = (Button) findViewById(R.id.HighScoreButton);
         ButterKnife.bind(this);
+        mStorageRef = FirebaseStorage.getInstance().getReference();
         centerTitle();
         setTitle("Quiz");
         if (isOnline() == false) {
@@ -112,7 +117,10 @@ public class MainActivity extends AppCompatActivity {
         if (isOnline() == false) {
             CreateOfflineAlert();
         } else {
-            CreateChooseCategoryAlert();
+            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+            intent.setType("image/*");
+            startActivityForResult(intent, PickPhotoReqCode);
+//            CreateChooseCategoryAlert();
         }
     }
 
@@ -348,25 +356,23 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == HighScoreReqCode) {
         }
         if (requestCode == PickPhotoReqCode) {
-//            Uri selectedImageUri = data.getData();
-//            imgidText.setText(selectedImageUri.getPath());
-//            Uri file = Uri.fromFile(new File(selectedImageUri.getPath()));
-//            StorageReference riversRef = storageRef.child("images/"+file.getLastPathSegment());
-//            uploadTask = riversRef.putFile(file);
-//
-//// Register observers to listen for when the download is done or if it fails
-//            uploadTask.addOnFailureListener(new OnFailureListener() {
-//                @Override
-//                public void onFailure(@NonNull Exception exception) {
-//                    // Handle unsuccessful uploads
-//                }
-//            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-//                @Override
-//                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-//                    // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
-//                    Uri downloadUrl = taskSnapshot.getDownloadUrl();
-//                }
-//            });
+            Uri selectedImageUri = data.getData();
+            File f = new File(selectedImageUri.getPath());
+            StorageReference riversRef = mStorageRef.child("images/"+f.getName());
+            riversRef.putFile(selectedImageUri)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            @SuppressWarnings("VisibleForTests") Uri download = taskSnapshot.getDownloadUrl();
+                            Toast.makeText(MainActivity.this, download.toString(), Toast.LENGTH_LONG).show();
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+
+                        }
+                    });
         }
         CheckHighScoreForSubmit();
     }
