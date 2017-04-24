@@ -38,6 +38,7 @@ import com.google.firebase.storage.*;
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -52,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
     int Points = 0;
     MediaPlayer mp;
     private StorageReference mStorageRef;
+    public String DownloadURL;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
         MoviesDirectorButton = (Button) findViewById(R.id.moviesDirector);
         MountainsButton = (Button) findViewById(R.id.MountainButton);
         HighscoreButton = (Button) findViewById(R.id.HighScoreButton);
+        DownloadURL = "";
         ButterKnife.bind(this);
         mStorageRef = FirebaseStorage.getInstance().getReference();
         centerTitle();
@@ -117,10 +120,10 @@ public class MainActivity extends AppCompatActivity {
         if (isOnline() == false) {
             CreateOfflineAlert();
         } else {
-            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-            intent.setType("image/*");
-            startActivityForResult(intent, PickPhotoReqCode);
-//            CreateChooseCategoryAlert();
+//            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+//            intent.setType("image/*");
+//            startActivityForResult(intent, PickPhotoReqCode);
+            CreateChooseCategoryAlert();
         }
     }
 
@@ -216,26 +219,37 @@ public class MainActivity extends AppCompatActivity {
 
     void CreateAddDataAlert(final String Category) {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = this.getLayoutInflater();
         View myView = inflater.inflate(R.layout.add_data_alert, null);
         QuestionText = (TextView) myView.findViewById(R.id.question);
         AnswerText = (TextView) myView.findViewById(R.id.answer);
-//        imgidText = (TextView) myView.findViewById(R.id.imgid);
-        ImageURL = (TextView) myView.findViewById(R.id.imgurlText);
-//        Button choosePictire = (Button) myView.findViewById(R.id.choosePictureButton);
-//        choosePictire.setOnClickListener(new View.OnClickListener() {
-//
-//            public void onClick(View v) {
-//                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-//                intent.setType("image/*");
-//                startActivityForResult(intent, PickPhotoReqCode);
-//            }
-//        });
+        imgidText = (TextView) myView.findViewById(R.id.imgid);
+//        ImageURL = (TextView) myView.findViewById(R.id.imgurlText);
+        Button choosePictire = (Button) myView.findViewById(R.id.choosePictureButton);
+        choosePictire.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("image/*");
+                startActivityForResult(intent, PickPhotoReqCode);
+            }
+        });
         builder.setView(myView)
-                .setPositiveButton("Submit", new DialogInterface.OnClickListener() {
-                    @Override
+                .setPositiveButton("Submit", null)
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        final AlertDialog d1 = builder.create();
+        d1.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                Button b1 = d1.getButton(AlertDialog.BUTTON_POSITIVE);
+                b1.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
                         if (isOnline() == false) {
                             CreateOfflineAlert();
                         } else {
@@ -244,25 +258,25 @@ public class MainActivity extends AppCompatActivity {
                             SubmitQuestionData question = new SubmitQuestionData();
                             question.Answer = AnswerText.getText().toString();
                             question.Question = QuestionText.getText().toString();
-                            question.imgid = ImageURL.getText().toString();
+                            question.imgid = DownloadURL;
                             question.QuestionCategory = Category;
-                            if (question.Answer.length() == 0 || question.Question.length() == 0 || question.imgid.length() == 0) {
+                            if (question.Answer.length() == 0 || question.Question.length() == 0) {
                                 Toast.makeText(MainActivity.this, "Fill all the field before submitting questions.", Toast.LENGTH_LONG).show();
+                            } else if (question.imgid.length() == 0) {
+                                Toast.makeText(MainActivity.this, "Upload a picture or wait for the upload to complete", Toast.LENGTH_LONG).show();
                             } else {
                                 myRef.push().setValue(question);
                                 Toast.makeText(MainActivity.this, "Question is submitted", Toast.LENGTH_LONG).show();
+                                d1.dismiss();
                             }
                         }
                     }
-                })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
                 });
-        builder.create();
-        builder.show();
+            }
+        });
+        d1.show();
     }
+
 
     void CreateOfflineAlert() {
 
@@ -356,23 +370,28 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == HighScoreReqCode) {
         }
         if (requestCode == PickPhotoReqCode) {
-            Uri selectedImageUri = data.getData();
-            File f = new File(selectedImageUri.getPath());
-            StorageReference riversRef = mStorageRef.child("images/"+f.getName());
-            riversRef.putFile(selectedImageUri)
-                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            @SuppressWarnings("VisibleForTests") Uri download = taskSnapshot.getDownloadUrl();
-                            Toast.makeText(MainActivity.this, download.toString(), Toast.LENGTH_LONG).show();
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
+            try {
+                Uri selectedImageUri = data.getData();
+                final File f = new File(selectedImageUri.getPath());
+                StorageReference riversRef = mStorageRef.child("submittedpictures/" + f.getName());
+                riversRef.putFile(selectedImageUri)
+                        .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                @SuppressWarnings("VisibleForTests") Uri download = taskSnapshot.getDownloadUrl();
+                                DownloadURL = download.toString();
+                                imgidText.setText(f.getName());
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
 
-                        }
-                    });
+                            }
+                        });
+            } catch (Exception e) {
+                Toast.makeText(MainActivity.this, "Please select a valid picture", Toast.LENGTH_LONG).show();
+            }
         }
         CheckHighScoreForSubmit();
     }

@@ -8,10 +8,10 @@
         android:layout_height="64dp"
         android:background="#A5CE72"
         android:contentDescription="Add Data"
+        android:gravity="center"
         android:scaleType="center"
         android:text="Submit Question"
-        android:gravity="center"
-        android:textSize="24dp"/>
+        android:textSize="24dp" />
 
     <EditText
         android:id="@+id/answer"
@@ -22,7 +22,7 @@
         android:layout_marginRight="4dp"
         android:layout_marginTop="16dp"
         android:hint="Answer"
-        android:inputType="textCapSentences"/>
+        android:inputType="textCapSentences" />
 
     <EditText
         android:id="@+id/question"
@@ -34,10 +34,21 @@
         android:layout_marginTop="4dp"
         android:fontFamily="sans-serif"
         android:hint="Question"
-        android:inputType="textCapSentences"/>
+        android:inputType="textCapSentences" />
 
-    <EditText
-        android:id="@+id/imgurlText"
+    <!--<EditText-->
+    <!--android:id="@+id/imgurlText"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginBottom="16dp"-->
+    <!--android:layout_marginLeft="4dp"-->
+    <!--android:layout_marginRight="4dp"-->
+    <!--android:layout_marginTop="4dp"-->
+    <!--android:fontFamily="sans-serif"-->
+    <!--android:hint="Image Link" />-->
+
+    <TextView
+        android:id="@+id/imgid"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
@@ -45,23 +56,13 @@
         android:layout_marginRight="4dp"
         android:layout_marginTop="4dp"
         android:fontFamily="sans-serif"
-        android:hint="Image Link" />
+        android:text="Name of Picture"
+        android:textAlignment="center" />
 
-    <!--<TextView-->
-    <!--android:id="@+id/imgid"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:text="nameofpicture"-->
-    <!--android:layout_marginBottom="16dp"-->
-    <!--android:layout_marginLeft="4dp"-->
-    <!--android:layout_marginRight="4dp"-->
-    <!--android:layout_marginTop="4dp"-->
-    <!--android:fontFamily="sans-serif" />-->
-
-    <!--<Button-->
-    <!--android:id="@+id/choosePictureButton"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:text="Choose Picture" />-->
+    <Button
+        android:id="@+id/choosePictureButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Choose Picture" />
 
 </LinearLayout>
