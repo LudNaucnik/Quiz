@@ -28,11 +28,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -42,6 +47,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.*;
 import com.google.firebase.messaging.*;
 
+
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -50,6 +56,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.squareup.picasso.Downloader;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+import com.google.gson.*;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -64,7 +75,8 @@ public class MainActivity extends AppCompatActivity {
     private StorageReference mStorageRef;
     public String DownloadURL;
     public final static String authKey = "AAAAxEuHZ4w:APA91bH_WglBiV-0qKZZMaGFqTPgovRVYWASeolQyrq4_zsINMuYnWawnboode8rt_CRxgpJgVYj3Kc-4AbWSsH3qiEnL2hWzOi-u8QvMbZq_cViVoozNrnBnJT00NAfJ0h3YBdHWwji";
-    public final static String FMCurl = "https://fcm.googleapis.com/fcm/send";
+    public final static String FCMurl = "https://fcm.googleapis.com/fcm/send";
+    RequestQueue queue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,7 +99,6 @@ public class MainActivity extends AppCompatActivity {
         mStorageRef = FirebaseStorage.getInstance().getReference();
         centerTitle();
         setTitle("Quiz");
-        Log.d("kakoetokenot", "token=" + FirebaseInstanceId.getInstance().getToken());
         if (isOnline() == false) {
             CreateOfflineAlert();
         } else {
@@ -133,49 +144,52 @@ public class MainActivity extends AppCompatActivity {
         if (isOnline() == false) {
             CreateOfflineAlert();
         } else {
-//            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-//            intent.setType("image/*");
-//            startActivityForResult(intent, PickPhotoReqCode);
 //            CreateChooseCategoryAlert();
-//            sendNotification();
+            sendNotification();
         }
     }
 
-//    public void sendNotification() {
-//        RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
-//        StringRequest sr = new StringRequest(Request.Method.POST, "http://api.someservice.com/post/comment", new Response.Listener<String>() {
-//            @Override
-//            public void onResponse(String response) {
-//
-//            }
-//        }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//            }
-//        }) {
-//            @Override
-//            protected Map<String, String> getParams() {
-//                Map<String, Map<String, String>> params = new HashMap<String, Map<String, String>>();
-//                Map<String, String> notification = new HashMap<String, String>();
-//                notification.put("body", "Something");
-//                notification.put("title", "something");
-//                notification.put("priority", "high");
-//                notification.put("sound", "on");
-//                params.put("notification", notification);
-//                params.put("to","/topics.")
-//
-//                return params;
-//            }
-//
-//            @Override
-//            public Map<String, String> getHeaders() throws AuthFailureError {
-//                Map<String, String> params = new HashMap<String, String>();
-//                params.put("Content-Type", "application/x-www-form-urlencoded");
-//                return params;
-//            }
-//        };
-//        queue.add(sr);
-//    }
+    public void sendNotification() {
+        try {
+            queue = Volley.newRequestQueue(MainActivity.this);
+            JsonObject notificationData = new JsonObject();
+            notificationData.addProperty("body","something");
+            notificationData.addProperty("title","naslov");
+            notificationData.addProperty("sound","on");
+            notificationData.addProperty("priority","high");
+            JsonObject params = new JsonObject();
+            params.add("notification",notificationData);
+            params.addProperty("to","/topics/HighScore");
+            JsonObjectRequest req = new JsonObjectRequest(FCMurl, new JSONObject(params.toString()),
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            try {
+                                Log.d("Response", response.toString(4));
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.d("Error: ", error.getMessage());
+                }
+            })
+            {
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> params = new HashMap<String, String>();
+                    params.put("Content-Type", "application/json");
+                    params.put("authorization", "key=" + authKey);
+                    return params;
+                }
+            };
+            queue.add(req);
+        } catch (Exception e) {
+            Log.d("Notification Error", e.getMessage());
+        }
+    }
 
     @OnClick(R.id.moviesDirector)
     public void MoviesDIrectorClick() {
