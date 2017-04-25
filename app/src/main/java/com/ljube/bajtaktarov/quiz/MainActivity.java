@@ -29,21 +29,30 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.*;
+import com.google.firebase.messaging.*;
 
 import java.io.File;
-import java.io.InputStream;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.OnEditorAction;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -54,6 +63,8 @@ public class MainActivity extends AppCompatActivity {
     MediaPlayer mp;
     private StorageReference mStorageRef;
     public String DownloadURL;
+    public final static String authKey = "AAAAxEuHZ4w:APA91bH_WglBiV-0qKZZMaGFqTPgovRVYWASeolQyrq4_zsINMuYnWawnboode8rt_CRxgpJgVYj3Kc-4AbWSsH3qiEnL2hWzOi-u8QvMbZq_cViVoozNrnBnJT00NAfJ0h3YBdHWwji";
+    public final static String FMCurl = "https://fcm.googleapis.com/fcm/send";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,11 +81,13 @@ public class MainActivity extends AppCompatActivity {
         MoviesDirectorButton = (Button) findViewById(R.id.moviesDirector);
         MountainsButton = (Button) findViewById(R.id.MountainButton);
         HighscoreButton = (Button) findViewById(R.id.HighScoreButton);
+        FirebaseMessaging.getInstance().subscribeToTopic("HighScore");
         DownloadURL = "";
         ButterKnife.bind(this);
         mStorageRef = FirebaseStorage.getInstance().getReference();
         centerTitle();
         setTitle("Quiz");
+        Log.d("kakoetokenot", "token=" + FirebaseInstanceId.getInstance().getToken());
         if (isOnline() == false) {
             CreateOfflineAlert();
         } else {
@@ -123,9 +136,46 @@ public class MainActivity extends AppCompatActivity {
 //            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
 //            intent.setType("image/*");
 //            startActivityForResult(intent, PickPhotoReqCode);
-            CreateChooseCategoryAlert();
+//            CreateChooseCategoryAlert();
+//            sendNotification();
         }
     }
+
+//    public void sendNotification() {
+//        RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
+//        StringRequest sr = new StringRequest(Request.Method.POST, "http://api.someservice.com/post/comment", new Response.Listener<String>() {
+//            @Override
+//            public void onResponse(String response) {
+//
+//            }
+//        }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//            }
+//        }) {
+//            @Override
+//            protected Map<String, String> getParams() {
+//                Map<String, Map<String, String>> params = new HashMap<String, Map<String, String>>();
+//                Map<String, String> notification = new HashMap<String, String>();
+//                notification.put("body", "Something");
+//                notification.put("title", "something");
+//                notification.put("priority", "high");
+//                notification.put("sound", "on");
+//                params.put("notification", notification);
+//                params.put("to","/topics.")
+//
+//                return params;
+//            }
+//
+//            @Override
+//            public Map<String, String> getHeaders() throws AuthFailureError {
+//                Map<String, String> params = new HashMap<String, String>();
+//                params.put("Content-Type", "application/x-www-form-urlencoded");
+//                return params;
+//            }
+//        };
+//        queue.add(sr);
+//    }
 
     @OnClick(R.id.moviesDirector)
     public void MoviesDIrectorClick() {
