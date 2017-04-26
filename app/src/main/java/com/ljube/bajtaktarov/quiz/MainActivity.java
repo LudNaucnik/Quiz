@@ -1,16 +1,12 @@
 package com.ljube.bajtaktarov.quiz;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
-import android.provider.DocumentsContract;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -22,9 +18,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewDebug;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -33,17 +27,12 @@ import android.widget.Toast;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -54,17 +43,12 @@ import com.google.firebase.messaging.*;
 
 
 import java.io.File;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.squareup.picasso.Downloader;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -87,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
     public final static String FCMurl = "https://fcm.googleapis.com/fcm/send";
     List<HighscoreData> highscoreArraylist = new ArrayList<>();
     RequestQueue queue;
-    int highPoints = 0;
+    int highPointsFromFirebase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
         FirebaseMessaging.getInstance().subscribeToTopic("HighScore");
         DownloadURL = "";
         ButterKnife.bind(this);
+        readHighScore();
         mStorageRef = FirebaseStorage.getInstance().getReference();
         centerTitle();
         setTitle("Quiz");
@@ -160,11 +145,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void sendNotification(String notificationTitle) {
+    public void sendNotification(String notificationTitle, String notificationBody) {
         try {
             queue = Volley.newRequestQueue(MainActivity.this);
             JsonObject notificationData = new JsonObject();
-            notificationData.addProperty("body", "Click here to try to beat it.");
+            notificationData.addProperty("body", notificationBody);
             notificationData.addProperty("title", notificationTitle);
             notificationData.addProperty("sound", "on");
             notificationData.addProperty("priority", "high");
@@ -204,7 +189,7 @@ public class MainActivity extends AppCompatActivity {
     void readHighScore() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("HighScores");
-        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 highscoreArraylist.clear();
@@ -224,7 +209,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 });
-                highPoints = Integer.parseInt(highscoreArraylist.get(0).Points);
+                highPointsFromFirebase = Integer.parseInt(highscoreArraylist.get(0).Points);
             }
 
             @Override
@@ -280,9 +265,8 @@ public class MainActivity extends AppCompatActivity {
                         HighscoreData highscore = new HighscoreData();
                         highscore.Name = name;
                         highscore.Points = String.valueOf(Points);
-                        readHighScore();
-                        if (Points >= highPoints) {
-                            sendNotification(highscore.Name + " has bitten the high score with " + String.valueOf(highscore.Points) + " points");
+                        if (Points > highPointsFromFirebase) {
+                            sendNotification(String.valueOf(highscore.Points) + " points" + " by " + highscore.Name, "Click here to try to beat it.");
                         }
                         FirebaseDatabase database = FirebaseDatabase.getInstance();
                         DatabaseReference myRef = database.getReference("HighScores");
