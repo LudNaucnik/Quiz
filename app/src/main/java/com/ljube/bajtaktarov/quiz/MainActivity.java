@@ -24,10 +24,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -52,7 +57,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -60,6 +68,7 @@ import com.squareup.picasso.Downloader;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import com.google.gson.*;
 
 import butterknife.ButterKnife;
@@ -76,7 +85,9 @@ public class MainActivity extends AppCompatActivity {
     public String DownloadURL;
     public final static String authKey = "AAAAxEuHZ4w:APA91bH_WglBiV-0qKZZMaGFqTPgovRVYWASeolQyrq4_zsINMuYnWawnboode8rt_CRxgpJgVYj3Kc-4AbWSsH3qiEnL2hWzOi-u8QvMbZq_cViVoozNrnBnJT00NAfJ0h3YBdHWwji";
     public final static String FCMurl = "https://fcm.googleapis.com/fcm/send";
+    List<HighscoreData> highscoreArraylist = new ArrayList<>();
     RequestQueue queue;
+    int highPoints = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -144,22 +155,22 @@ public class MainActivity extends AppCompatActivity {
         if (isOnline() == false) {
             CreateOfflineAlert();
         } else {
-//            CreateChooseCategoryAlert();
-            sendNotification();
+            CreateChooseCategoryAlert();
+//            sendNotification();
         }
     }
 
-    public void sendNotification() {
+    public void sendNotification(String notificationTitle) {
         try {
             queue = Volley.newRequestQueue(MainActivity.this);
             JsonObject notificationData = new JsonObject();
-            notificationData.addProperty("body","something");
-            notificationData.addProperty("title","naslov");
-            notificationData.addProperty("sound","on");
-            notificationData.addProperty("priority","high");
+            notificationData.addProperty("body", "Click here to try to beat it.");
+            notificationData.addProperty("title", notificationTitle);
+            notificationData.addProperty("sound", "on");
+            notificationData.addProperty("priority", "high");
             JsonObject params = new JsonObject();
-            params.add("notification",notificationData);
-            params.addProperty("to","/topics/HighScore");
+            params.add("notification", notificationData);
+            params.addProperty("to", "/topics/HighScore");
             JsonObjectRequest req = new JsonObjectRequest(FCMurl, new JSONObject(params.toString()),
                     new Response.Listener<JSONObject>() {
                         @Override
@@ -175,8 +186,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onErrorResponse(VolleyError error) {
                     Log.d("Error: ", error.getMessage());
                 }
-            })
-            {
+            }) {
                 @Override
                 public Map<String, String> getHeaders() throws AuthFailureError {
                     Map<String, String> params = new HashMap<String, String>();
@@ -189,6 +199,41 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
             Log.d("Notification Error", e.getMessage());
         }
+    }
+
+    void readHighScore() {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("HighScores");
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                highscoreArraylist.clear();
+                HighscoreData highscore = new HighscoreData();
+                for (DataSnapshot child : dataSnapshot.getChildren()) {
+                    highscore = child.getValue(HighscoreData.class);
+                    highscoreArraylist.add(highscore);
+                }
+                Collections.sort(highscoreArraylist, new Comparator<HighscoreData>() {
+                    public int compare(HighscoreData score1, HighscoreData score2) {
+                        if (Integer.parseInt(score1.Points) < Integer.parseInt(score2.Points)) {
+                            return +1;
+                        } else if (Integer.parseInt(score1.Points) > Integer.parseInt(score2.Points)) {
+                            return -1;
+                        } else {
+                            return 0;
+                        }
+                    }
+                });
+                highPoints = Integer.parseInt(highscoreArraylist.get(0).Points);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Intent intent = new Intent();
+                setResult(MainActivity.CancelReqCode, intent);
+                finish();
+            }
+        });
     }
 
     @OnClick(R.id.moviesDirector)
@@ -235,6 +280,10 @@ public class MainActivity extends AppCompatActivity {
                         HighscoreData highscore = new HighscoreData();
                         highscore.Name = name;
                         highscore.Points = String.valueOf(Points);
+                        readHighScore();
+                        if (Points >= highPoints) {
+                            sendNotification(highscore.Name + " has bitten the high score with " + String.valueOf(highscore.Points) + " points");
+                        }
                         FirebaseDatabase database = FirebaseDatabase.getInstance();
                         DatabaseReference myRef = database.getReference("HighScores");
                         myRef.push().setValue(highscore);
