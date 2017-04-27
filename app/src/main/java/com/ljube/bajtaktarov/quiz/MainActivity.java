@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
         readHighScore();
         mStorageRef = FirebaseStorage.getInstance().getReference();
         centerTitle();
-        setTitle("Quiz");
+        setTitle("Fire Quiz");
         if (isOnline() == false) {
             CreateOfflineAlert();
         } else {
